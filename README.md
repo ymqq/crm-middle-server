@@ -80,3 +80,4 @@ npm run dev (需先开启mongodb)
 
 # License
 
+[GNU](https://github.com/ymqq/crm-middle-server/master/LICENSE)
