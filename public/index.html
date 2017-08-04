@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="screen-orientation" content="portrait" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="full-screen" content="yes">
+  <meta name="x5-fullscreen" content="true">
+  <title>CRM Middle Server</title>
+
+<style>
+html, body {
+  width: 100%;
+  line-height: 2;
+}
+
+.result {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  padding: 4px;
+}
+
+#result {
+  width: 96%;
+  height: 186px;
+  padding: 4px;
+}
+
+</style>
+</head>
+
+<body>
+
+  <div class="result">
+    <textarea id="result"></textarea>
+  </div>
+
+  <div style="height: 220px;"></div>
+
+  <h5>登陆相关</h5>
+
+  <button id="testLogin">测试登陆</button>
+
+  <button id="testSaveTeam">测试团队保存</button>
+
+  <button id="testLogout">测试登出</button>
+
+  <br/>
+
+  <button id="testForgetPwdForCheckAccount">测试忘记密码的账号检查同时下发短信验证码</button>
+
+  <button id="testForgetPwdForCheckSmsCode">测试忘记密码的短信验证码校验</button>
+
+  <button id="testForgetPwdForSetNetPwd">测试忘记密码的设置新密码</button>
+
+  <button id="testModifyPwd">测试修改密码</button>
+
+  <h5>配置数据</h5>
+
+  <button id="testConfigsUpdate">测试全局配置文件更新</button>
+
+  <button id="testConfigsQuery">测试查询全局配置文件中的数据</button>
+
+  <button id="testConfigsCodeToName">测试编码转换为名称</button>
+
+  <button id="testConfigsNameToCode">测试名称转换为编码</button>
+
+  <h5>客户查询</h5>
+
+  <button id="testQueryCustByCertNo">测试证件号查询客户</button>
+
+  <button id="testQueryCustByAccNbr">测试接入号查询客户</button>
+
+  <button id="testQueryCustByCustId">测试客户ID查询客户</button>
+
+  <h5>产品查询</h5>
+
+  <button id="testQueryProductsByAccNbr">测试接入号查询产品列表</button>
+
+  <button id="testQueryProductByProdInstId">测试产品实例ID查询销售品</button>
+
+  <button id="testQueryProductByProdOfferInstId">测试销售品实例ID查询销售品</button>
+
+  <button id="testQueryProductsByAccNbrAndCustId">测试接入号与客户ID查询产品列表</button>
+
+  <button id="testQueryProdOffersByCustId">测试客户ID查询销售品列表</button>
+
+  <h5>专区查询</h5>
+
+  <button id="testQueryAllZones">测试查询所有专区列表数据</button>
+
+  <button id="testQueryZoneBySaleOrderType">测试查询单个专区列表数据</button>
+
+  <button id="testQueryZoneItemByServiceCode">测试ServiceCode查询专区单项</button>
+
+  <h5>号码预约查询</h5>
+
+  <button id="testQuery4GNbrByFilter">测试4G号码预约查询</button>
+
+  <button id="testOccupy4GNbr">测试4G号码(17789887860)占用</button>
+
+  <button id="testQueryReservation">测试已预约号码查询</button>
+
+  <button id="testRelease4GNbr">测试4G号码(17789887860)释放</button>
+
+
+  <h5>地址查询</h5>
+
+  <button id="testQueryAddressForFj">测试福建地址资源查询</button>
+
+  <button id="testQueryDetailForFj">测试福建地址资源详情查询</button>
+
+  <button id="testChooseAddressForFj">测试福建地址资源占用</button>
+
+  <button id="testQueryAddressForHn">测试海南地址资源查询</button>
+
+  <button id="testQueryDetailForHn">测试海南地址资源详情查询</button>
+
+  <button id="testChooseAddressForHn">测试海南地址资源占用</button>
+
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+var token = '';
+$(document).ready(function () {
+
+  $('#testLogin').on('click', function(e) {
+    var data = {
+      'account': 'ffcs005',
+      'password': 'Hn123123',
+      // 'account': 'fztest',
+      // 'password': 'fZ123123',
+      'deviceInfo': {
+        sysVerId: 9999,
+        deviceId: '12345678900000111',
+        deviceModel: 'Mi5s',
+        deviceSystem: 'Android',
+        deviceSystemVersion: '6.0.1',
+        macAddr: '90:98:30:40:54'
+      }
+    };
+    $.post('/v1/users/login', data, function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testSaveTeam').on('click', function(e) {
+    var data = {
+      'teamId': '434404',
+      // 'teamId': '50086',
+      'smsCode': '123456'
+    };
+    $.ajax({
+      url: '/v1/users/saveTeam',
+      data: data,
+      type: 'POST',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('token', token);
+      },
+      success: (data) => {
+        token = data.token;
+        $('#result').val(JSON.stringify(data, null, 2));
+      }
+    });
+  });
+
+  $('#testLogout').on('click', function(e) {
+    $.ajax({
+      url: '/v1/users/logout',
+      data: {},
+      type: 'POST',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('token', token);
+      },
+      success: (data) => {
+        $('#result').val(JSON.stringify(data, null, 2));
+      }
+    });
+  });
+
+  $('#testForgetPwdForCheckAccount').on('click', function(e) {
+    var data = {
+      'account': 'ffcs005',
+      'mobile': '189098900098',
+      'certNo': '12345679894934524958234'
+    };
+    $.post('/v1/users/forgetPwd', data, function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testForgetPwdForCheckSmsCode').on('click', function(e) {
+    var data = {
+      'account': 'ffcs005',
+      'mobile': '189098900098',
+      'certNo': '12345679894934524958234',
+      'newPassword': 'Hn123123'
+    };
+    $.post('/v1/users/forgetPwd', data, function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testForgetPwdForSetNetPwd').on('click', function(e) {
+    var data = {
+      'account': 'ffcs005',
+      'mobile': '189098900098',
+      'certNo': '12345679894934524958234',
+      'newPassword': 'Hn123123'
+    };
+    $.post('/v1/users/forgetPwd', data, function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testModifyPwd').on('click', function(e) {
+    var data = {
+      'account': 'ffcs005',
+      'oldPassword': 'Hn123123',
+      'newPassword': 'Hn123123'
+    };
+    $.ajax({
+      url: '/v1/users/modifyPwd',
+      data: data,
+      type: 'POST',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('token', token);
+      },
+      success: (data) => {
+        $('#result').val(JSON.stringify(data, null, 2));
+      }
+    });
+  });
+
+  
+  // 配置数据接口测试
+  $('#testConfigsUpdate').on('click', function(e) {
+    $.get('/v1/configs/update', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testConfigsQuery').on('click', function(e) {
+    $.get('/v1/configs/query?domainCode=VERSION_NO', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testConfigsCodeToName').on('click', function(e) {
+    $.get('/v1/configs/codeToName?domainCode=PAY_AREA&valueCode=0598', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testConfigsNameToCode').on('click', function(e) {
+    $.get('/v1/configs/nameToCode?domainCode=PAY_AREA&valueName=1', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+
+  // 客户查询接口测试
+  $('#testQueryCustByCertNo').on('click', function(e) {
+    $.get('/v1/customers/byCert?certType=1&certNo=350724198908102011', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryCustByAccNbr').on('click', function(e) {
+    $.get('/v1/customers/byAccNbr?accNbr=18907553333', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryCustByCustId').on('click', function(e) {
+    $.get('/v1/customers/byCustId?custId=2706685344', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+
+  // 产品查询接口测试
+  $('#testQueryProductsByAccNbr').on('click', function(e) {
+    $.get('/v1/products/byAccNbr?accNbr=18907553333', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryProductByProdInstId').on('click', function(e) {
+    $.get('/v1/products/byProdInstId?prodInstId=31332711', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryProductByProdOfferInstId').on('click', function(e) {
+    $.get('/v1/products/byProdOfferInstId?prodOfferInstId=112298150', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryProductsByAccNbrAndCustId').on('click', function(e) {
+    $.get('/v1/products/byAccNbrAndCustId?accNbr=18907553333&custId=41510957', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryProdOffersByCustId').on('click', function(e) {
+    $.get('/v1/products/prodOffers/byCustId?custId=41510957', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  // 专区查询测试
+  $('#testQueryAllZones').on('click', function(e) {
+    $.get('/v2/zones/all?43534', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryZoneBySaleOrderType').on('click', function(e) {
+    $.get('/v2/zones/zone?saleOrderType=E-SURFING', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryZoneItemByServiceCode').on('click', function(e) {
+    $.get('/v2/zones/item?saleOrderType=9002011', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+
+
+  // 号码预约查询测试
+  $('#testQuery4GNbrByFilter').on('click', function(e) {
+    $.get('/v2/phones/4g?segment=0&feature=0&prestore=SAVE_CHARGE_4G_5&q=88', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testOccupy4GNbr').on('click', function(e) {
+    var data = {
+      'id': '',
+      'phone': '17789887860',
+      'level': '4',
+      'areaCode': '4601',
+      'prestore': '0',
+      'leastCode': '0',
+      'certNo': '350724198908102011',
+      'custName': '陈卿强'
+    };
+    $.ajax({
+      url: '/v2/phones/4g/occupation',
+      data: data,
+      type: 'POST',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('token', token);
+      },
+      success: (data) => {
+        $('#result').val(JSON.stringify(data, null, 2));
+      }
+    });
+  });
+
+  $('#testRelease4GNbr').on('click', function(e) {
+    var data = {
+      'id': '',
+      'phone': '17789887860',
+      'certNo': '350724198908102011'
+    };
+    $.ajax({
+      url: '/v2/phones/4g/release',
+      data: data,
+      type: 'POST',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('token', token);
+      },
+      success: (data) => {
+        $('#result').val(JSON.stringify(data, null, 2));
+      }
+    });
+  });
+
+  $('#testQueryReservation').on('click', function(e) {
+    $.get('/v2/phones/4g/reservation?certNo=350724198908102011', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+
+  // 地址查询
+  $('#testQueryAddressForFj').on('click', function(e) {
+    $.get('/v2/addresses/fj?q=&parentId=', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryDetailForFj').on('click', function(e) {
+    $.get('/v2/addresses/fj/detail?id=&areaCode', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testChooseAddressForFj').on('click', function(e) {
+    var data = {
+      'id': '',
+      'phone': '17789887860',
+      'certNo': '350724198908102011'
+    };
+    $.ajax({
+      url: '/v2/addresses/fj/choice',
+      data: data,
+      type: 'POST',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('token', token);
+      },
+      success: (data) => {
+        $('#result').val(JSON.stringify(data, null, 2));
+      }
+    });
+  });
+
+  $('#testQueryAddressForHn').on('click', function(e) {
+    $.get('/v2/addresses/hn?q=大道&type=ADDRESS&page=1&areaCode=89801', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testQueryDetailForHn').on('click', function(e) {
+    $.get('/v2/addresses/hn/resourcesCover?id=20652294&fullName=海南海口市琼山区琼州大道松山士多店（FTTH)&areaCode=89801', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testChooseAddressForHn').on('click', function(e) {
+    var data = {
+      'id': '',
+      'phone': '17789887860',
+      'certNo': '350724198908102011'
+    };
+    $.ajax({
+      url: '/v2/addresses/hn/choice',
+      data: data,
+      type: 'POST',
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader('token', token);
+      },
+      success: (data) => {
+        $('#result').val(JSON.stringify(data, null, 2));
+      }
+    });
+  });
+});
+</script>
+</body>
+
+</html>
