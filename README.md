@@ -253,5 +253,3 @@ npm run dev (需先开启mongodb)
 # License
 
 [GPL](https://github.com/bailicangdu/node-elm/blob/master/COPYING)
-
-
