@@ -14,5 +14,6 @@ router.post('/forgetPwd/checkAccount', User.forgetPwdForCheckAccount);
 router.post('/forgetPwd/checkSmsCode', User.forgetPwdForCheckSmsCode);
 router.post('/forgetPwd/setNewPwd', User.forgetPwdForSetNewPwd);
 router.post('/logout', Check.checkLogin, User.logout);
+router.get('/info', Check.checkLogin, User.getInfo);
 
 export default router;

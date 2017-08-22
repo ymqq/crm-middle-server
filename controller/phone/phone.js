@@ -84,12 +84,13 @@ class Phone extends BaseComponent {
       domainCode: { $regex: 'COMMON_REGION_C3_', $options: 'i' },
       valueCode: item.area_CODE,
     });
+    config = config || {};
     return {
       id: item.number_ID,
       phone: item.number,
       level: item.number_CLASS,
       areaCode: item.area_CODE,
-      areaName: config.valueName,
+      areaName: config.valueName || item.area_CODE,
       description: '预存' + (item.deposit || 0) + '元，保底' + (item.least_COST) + '元/月',
       prestore: item.deposit,
       leastCost: item.least_COST,

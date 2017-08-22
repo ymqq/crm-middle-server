@@ -223,9 +223,9 @@ class Address extends BaseComponent {
    * @param {*} next 
    */
   async queryCoverInfoForHn(req, res, next) {
-    let { id, fullName, areaCode } = req.query;
+    let { id, fullName, areaCode, geoId } = req.query;
 
-    if (!id || !fullName || !areaCode) {
+    if (!id || !fullName || !areaCode || !geoId) {
       return res.json({
         code: 400,
         error: '请求参数错误！'
@@ -242,11 +242,92 @@ class Address extends BaseComponent {
     if (result.error) {
       res.json(result);
     } else {
-      res.json({
-        code: 200,
-        result: result
-      });
+      try {
+        let data = {
+          id,
+          fullName,
+          areaCode,
+          geoId,
+          exch: {
+            id: result.exchId,
+            name: result.exchName,
+          },
+          measure: {
+            id: result.measureId,
+            name: result.measureName,
+          },
+          town: {
+            name: result.townName,
+            flag: result.townFlag,
+          },
+          cover: this.getCovers(result.coverInfo),
+          tel: this.getTels(result.telInfo),
+          wire: this.getWires(result.wiredInfo),
+        }
+        res.json({
+          code: 200,
+          result: data
+        });
+      } catch (err) {
+        res.json({
+          code: 400,
+          error: '数据解析错误！'
+        });
+      }
     }
+  }
+
+  /**
+   * 获取地址覆盖资源信息
+   * 
+   * @param {*} list 
+   */
+  getCovers(list) {
+    let covers = [];
+    list && list.forEach(item => {
+      covers.push({
+        deviceSpec: item.rsType,
+        deviceId: item.rsRemark,
+        accessMode: item.joinType,
+      });
+    });
+    return covers;
+  }
+
+  /**
+   * 语音业务可装数量信息
+   * 
+   * @param {*} list 
+   */
+  getTels(list) {
+    let tels = [];
+    list && list.forEach(item => {
+      tels.push({
+        pstn: item.pstn,
+        ag: item.ag,
+        iad: item.iad,
+        isIms: item.isims,
+      });
+    });
+    return tels;
+  }
+
+  /**
+   * 宽带业务可装数量信息
+   * 
+   * @param {*} list 
+   */
+  getWires(list) {
+    let wires = [];
+    list && list.forEach(item => {
+      wires.push({
+        xdslCount: item.xdslcount,
+        xdslMaxSpeed: item.xdslspeed,
+        lanCount: item.lancount,
+        ftthCount: item.ftthcount,
+      });
+    });
+    return wires;
   }
 
   /** /v2/addresses/hn/choice
@@ -277,6 +358,7 @@ class Address extends BaseComponent {
         });
       }
 
+      // 保存到Session中
       req.session.orderInfo.address = {
         id,
         fullName,

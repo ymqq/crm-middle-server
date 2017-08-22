@@ -323,6 +323,19 @@ class User extends BaseComponent {
     }
   }
 
+  async getInfo(req, res, next) {
+    let staffInfo = req.session.staffInfo;
+    
+    res.json({
+      code: 200,
+      result: {
+        account: staffInfo.code,
+        name: staffInfo.staff_NAME,
+        teamName: staffInfo.team_NAME
+      }
+    });
+  }
+
 }
 
 export default new User();

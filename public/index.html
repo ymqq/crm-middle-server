@@ -61,6 +61,8 @@ html, body {
 
   <button id="testModifyPwd">测试修改密码</button>
 
+  <button id="testGetInfo">测试获取用户信息</button>
+
   <h5>配置数据</h5>
 
   <button id="testConfigsUpdate">测试全局配置文件更新</button>
@@ -125,17 +127,65 @@ html, body {
   <button id="testChooseAddressForHn">测试海南地址资源占用</button>
 
 
+  <h5>业绩查询</h5>
+
+  <button id="testGetTodayStatistics">测试当日业绩统计数据查询</button>
+
+  <button id="testGetSaleOrderList">测试当日业绩列表数据查询</button>
+
+  <button id="testGetSaleOrderListForDate">测试指定日期业绩列表数据查询</button>
+
+  <button id="testGetCancelledOrderCount">测试已退单数量查询</button>
+
+  <button id="testGetCancelledOrderList">测试已退单列表数据查询</button>
+
+  <button id="testGetOrderAgreement">测试订单协议查询</button>
+
+  <button id="testGetOrderPhotos">测试订单照片查询</button>
+
+  <br/>
+
+  <button id="testGetCrmOrderPoolStatistics">测试CRM工单池个人当日统计数据</button>
+
+  <button id="testGetCrmOrderPoolStatisticsForDate">测试CRM工单池个人指定日期统计数据</button>
+
+  <button id="testGetCrmOrderPoolList">测试CRM工单池个人当日列表数据查询</button>
+
+  <button id="testGetCrmOrderPoolListForDate">测试CRM工单池个人指定日期列表数据查询</button>
+
+  <br/>
+
+  <button id="testGetCrmOrderPoolStatisticsForTeam">测试CRM工单池团队当日统计数据</button>
+
+  <button id="testGetCrmOrderPoolStatisticsForTeamDate">测试CRM工单池团队指定日期统计数据</button>
+
+  <button id="testGetCrmOrderPoolListForTeam">测试CRM工单池团队当日列表数据查询</button>
+
+  <button id="testGetCrmOrderPoolListForTeamDate">测试CRM工单池团队指定日期列表数据查询</button>
+
+  <br/>
+
+  <button id="testGetCrmOrderPoolDetail">测试CRM工单池工单详情查询</button>
+
+  <button id="testGetCrmOrderCancelledReason">测试CRM工单池工单详情退单原因查询</button>
+
+
+  <h4>专用测试API</h4>
+
+  <button id="testCheckOrderAmount">测试海南H5页面的算费接口</button>
+
+
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
 var token = '';
 $(document).ready(function () {
+  // let [account, password, teamId] = ['ffcs005', 'Hn123123', '434404'];
+  let [account, password, teamId] = ['fztest', 'fZ123123', '50086'];
 
   $('#testLogin').on('click', function(e) {
     var data = {
-      'account': 'ffcs005',
-      'password': 'Hn123123',
-      // 'account': 'fztest',
-      // 'password': 'fZ123123',
+      account,
+      password,
       'deviceInfo': {
         sysVerId: 9999,
         deviceId: '12345678900000111',
@@ -152,8 +202,7 @@ $(document).ready(function () {
 
   $('#testSaveTeam').on('click', function(e) {
     var data = {
-      'teamId': '434404',
-      // 'teamId': '50086',
+      teamId,
       'smsCode': '123456'
     };
     $.ajax({
@@ -238,6 +287,12 @@ $(document).ready(function () {
     });
   });
 
+  $('#testGetInfo').on('click', function(e) {
+    $.get('/v1/users/info', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
   
   // 配置数据接口测试
   $('#testConfigsUpdate').on('click', function(e) {
@@ -318,7 +373,7 @@ $(document).ready(function () {
 
   // 专区查询测试
   $('#testQueryAllZones').on('click', function(e) {
-    $.get('/v2/zones/all?43534', function (data, status) {
+    $.get('/v2/zones/all', function (data, status) {
       $('#result').val(JSON.stringify(data, null, 2));
     });
   });
@@ -396,7 +451,7 @@ $(document).ready(function () {
 
   // 地址查询
   $('#testQueryAddressForFj').on('click', function(e) {
-    $.get('/v2/addresses/fj?q=&parentId=', function (data, status) {
+    $.get('/v2/addresses/fj?q=&parentId=1094104&page=1', function (data, status) {
       $('#result').val(JSON.stringify(data, null, 2));
     });
   });
@@ -433,7 +488,7 @@ $(document).ready(function () {
   });
 
   $('#testQueryDetailForHn').on('click', function(e) {
-    $.get('/v2/addresses/hn/resourcesCover?id=20652294&fullName=海南海口市琼山区琼州大道松山士多店（FTTH)&areaCode=89801', function (data, status) {
+    $.get('/v2/addresses/hn/resourcesCover?id=20652294&fullName=海南海口市琼山区琼州大道松山士多店（FTTH)&areaCode=89801&geoId=19388331', function (data, status) {
       $('#result').val(JSON.stringify(data, null, 2));
     });
   });
@@ -456,6 +511,121 @@ $(document).ready(function () {
       }
     });
   });
+
+
+  // 业绩查询
+
+  $('#testGetTodayStatistics').on('click', function(e) {
+    $.get('/v2/achievements/today/statistics', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetSaleOrderList').on('click', function(e) {
+    $.get('/v2/achievements/list?status=0003', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetSaleOrderListForDate').on('click', function(e) {
+    $.get('/v2/achievements/list?startDay=2017-08-06&endDay=2017-08-10&status=0003', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCancelledOrderCount').on('click', function(e) {
+    $.get('/v2/achievements/cancelled/count', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCancelledOrderList').on('click', function(e) {
+    $.get('/v2/achievements/cancelled/list', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetOrderAgreement').on('click', function(e) {
+    $.get('/v2/achievements/agreement?saleOrderNbr=P201708100139607', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetOrderPhotos').on('click', function(e) {
+    $.get('/v2/achievements/orderPhotos?saleOrderNbr=P201702100117612', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolStatistics').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/statistics?type=staff', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolStatisticsForDate').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/statistics?type=staff&startDay=2017-08-06&endDay=2017-08-22', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolList').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/list?status=&type=staff', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolListForDate').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/list?status=&type=staff&startDay=2017-08-06&endDay=2017-08-22', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolStatisticsForTeam').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/statistics?type=team', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolStatisticsForTeamDate').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/statistics?type=team&startDay=2017-08-06&endDay=2017-08-22', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolListForTeam').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/list?status=待确认&type=team', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolListForTeamDate').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/list?status=待确认&type=team&startDay=2017-08-06&endDay=2017-08-22', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderPoolDetail').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/detail?id=112779&status=待确认&saleOrderNbr=P201708210141690&crmOrderNbr=FJ2017082162191521', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+  $('#testGetCrmOrderCancelledReason').on('click', function(e) {
+    $.get('/v2/achievements/crmOrderPool/cancelDetail?saleOrderNbr=P201708210141690', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+
+
+
+
+  $('#testCheckOrderAmount').on('click', function(e) {
+    $.get('/tests/checkOrderAmount?pNo=P201708080023217', function (data, status) {
+      $('#result').val(JSON.stringify(data, null, 2));
+    });
+  });
+  
 });
 </script>
 </body>

@@ -7,6 +7,10 @@ import product from './v1/product'
 import zone from './v2/zone'
 import phone from './v2/phone'
 import address from './v2/address'
+import achievement from './v2/achievement'
+
+
+import testApi from './test'
 
 
 export default app => {
@@ -20,4 +24,8 @@ export default app => {
 	app.use('/v2/zones', zone);
 	app.use('/v2/phones', phone);
 	app.use('/v2/addresses', address);
+	app.use('/v2/achievements', achievement);
+
+
+	app.use('/tests', testApi)
 }

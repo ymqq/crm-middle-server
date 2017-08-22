@@ -1,3 +1,5 @@
+'use strict';
+
 import fetch from 'node-fetch'
 import Ids from '../models/ids'
 import config from 'config-lite'
@@ -14,7 +16,8 @@ export default class BaseComponent {
 			keyId: '',
 			keyValue: '',
 			logId: '9999',
-			systemCode: '207',
+			// systemCode: '207',
+			systemCode: '205',
 			versionCode: '9999',
 			device: 'Android',
 			deviceInfo: {
@@ -93,6 +96,7 @@ export default class BaseComponent {
 
 			responseJson = await this.decrypt3DesEcb(responseJson, DES_KEY);
 			responseJson = JSON.parse(responseJson);
+			console.log('responseJson', JSON.stringify(responseJson));
 
 			responseJson = this.msgHandler(responseJson);
 		} catch (err) {
@@ -144,10 +148,15 @@ export default class BaseComponent {
 			result = msg.detail;
 
 			if (result.error) {
-				result = {
-					code: 400,
-					error: result.error.message
-				};
+				if (result.error.id && result.error.id !== '0'
+					&& result.error.message && result.error.message.indexOf("成功") === -1) {
+					result = {
+						code: 400,
+						error: result.error.message
+					};
+				} else {
+					delete result.error;
+				}
 			}
 		} else {
 			result = {
