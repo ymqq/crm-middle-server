@@ -28,13 +28,17 @@ nodejs + express + mongodb + mongoose + es6/7
 ```
 git clone https://github.com/ymqq/crm-middle-server  
 
-cd node-elm
+cd crm-middle-server
 
 npm install
 
 npm run dev (需先开启mongodb)
 
 访问: http://localhost:8001
+
+测试接口
+
+npm test
 
 ```
 
@@ -57,7 +61,7 @@ npm run dev (需先开启mongodb)
 - [x] 专区查询相关 -- 完成
 - [x] 号码预约查询相关 -- 完成
 - [x] 地址查询相关 -- 完成
-- [x] 业绩查询相关 -- 待开发
+- [x] 业绩查询相关 -- 完成
 
 
 

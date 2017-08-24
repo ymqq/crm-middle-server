@@ -148,11 +148,14 @@ export default class BaseComponent {
 			result = msg.detail;
 
 			if (result.error) {
+				let message = result.error.message;
+
 				if (result.error.id && result.error.id !== '0'
-					&& result.error.message && result.error.message.indexOf("成功") === -1) {
+					&& message 
+					&& message.indexOf('成功') === -1) {
 					result = {
 						code: 400,
-						error: result.error.message
+						error: message
 					};
 				} else {
 					delete result.error;

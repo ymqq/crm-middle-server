@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development supervisor --harmony index.js",
     "local": "cross-env NODE_ENV=local supervisor --harmony index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/mocha/bin/mocha --recursive --colors --growl --reporter mochawesome \"./test\"",
     "start": "cross-env NODE_ENV=production pm2 start index.js --node-args='--harmony' --name 'crm-middle-server'",
     "stop": "cross-env NODE_ENV=production pm2 stop index.js --name 'node-elm'",
     "restart": "cross-env NODE_ENV=production pm2 restart index.js --node-args='--harmony' --name 'crm-middle-server'"
@@ -56,6 +56,10 @@
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
-    "babel-plugin-transform-export-extensions": "^6.22.0"
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "mochawesome": "^2.3.0",
+    "superagent": "^3.6.0"
   }
 }

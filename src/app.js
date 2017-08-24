@@ -71,5 +71,6 @@ process.on('uncaughtException', err => {
 });
 
 app.use(history());
+// 该路径是针对根路径而言
 app.use(express.static('./public'));
 app.listen(config.port);
