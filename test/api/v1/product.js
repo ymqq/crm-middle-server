@@ -1,9 +1,8 @@
 var fetch = require('node-fetch');
-var request = require('superagent');
 var expect = require('chai').expect;
 
-describe('v1版本API接口测试', function () {
-  describe('configs相关接口测试', function () {
+describe.skip('v1版本API接口测试', function () {
+  describe('Configuration相关接口测试', function () {
     var BASE = 'http://localhost:8001/v1/configs';
 
     beforeEach(function () {
